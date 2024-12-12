@@ -51,13 +51,38 @@ export class AuthService {
   }
 
   // to login user with email and password
-  loginWithEmail(loginEmailAndPassword: LoginWithEmailDto) {
-    const email = loginEmailAndPassword.email;
+  async loginWithEmail(loginEmailAndPassword: LoginWithEmailDto) {
+    const { email, password } = loginEmailAndPassword;
+
+    const existingUser = await this.prisma.user.findUnique({
+      where: {
+        email,
+      },
+    });
+
+    if (!existingUser) {
+      throw new ConflictException(
+        'No account is associated with this email address',
+      );
+    }
+
+    const savedPasswordHash = existingUser.password_hash;
+
+    const isMatchingPassword = await bcrypt.compare(
+      password,
+      savedPasswordHash,
+    );
+
+    if (!isMatchingPassword) {
+      throw new ConflictException(
+        'Incorrect password for associated email address',
+      );
+    }
 
     const token = this.jwtService.sign({ email });
 
     return {
-      message: 'User logged-in successfully',
+      message: 'Welcome! You’ve successfully logged in',
       token,
     };
   }
