@@ -39,6 +39,12 @@ model Order {
   createdAt    DateTime    @default(now())
 }
 
+model ProductsCategory {
+  category_id Int    @id @default(autoincrement())
+  name        String
+  image       String
+}
+
 // ENUMS
 enum UserRole {
   ADMIN
