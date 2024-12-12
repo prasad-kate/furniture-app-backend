@@ -9,12 +9,14 @@ datasource db {
 
 // MODELS
 model Products {
-  id        Int      @id @default(autoincrement())
-  name      String
-  price     Int
-  image     String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String   @default("")
+  image       String
+  price       Int      @default(0)
+  stars       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model User {

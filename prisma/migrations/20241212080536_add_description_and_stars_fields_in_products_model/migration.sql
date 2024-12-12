@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "Products" ADD COLUMN     "description" TEXT NOT NULL DEFAULT '',
+ADD COLUMN     "stars" INTEGER NOT NULL DEFAULT 0,
+ALTER COLUMN "price" SET DEFAULT 0;
