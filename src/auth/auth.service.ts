@@ -37,8 +37,15 @@ export class AuthService {
         },
       });
 
+      const token = this.jwtService.sign({ email, name });
+
       return {
         message: 'User created successfully',
+        token,
+        userData: {
+          email,
+          name,
+        },
       };
     } catch (error) {
       if (error instanceof ConflictException) {
@@ -79,11 +86,17 @@ export class AuthService {
       );
     }
 
-    const token = this.jwtService.sign({ email });
+    const name = existingUser.name;
+
+    const token = this.jwtService.sign({ email, name });
 
     return {
       message: 'Welcome! You’ve successfully logged in',
       token,
+      userData: {
+        email,
+        name,
+      },
     };
   }
 }
