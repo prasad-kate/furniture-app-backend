@@ -19,6 +19,7 @@ model Products {
   category    ProductsCategory @relation(fields: [category_id], references: [category_id])
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
+  orders      Order[]
 }
 
 model User {
@@ -37,6 +38,9 @@ model Order {
   user_id      Int
   user         User        @relation(fields: [user_id], references: [user_id])
   order_status OrderStatus
+  product_id   Int
+  product      Products    @relation(fields: [product_id], references: [id])
+  quantity     Int
   total        Int         @default(0)
   createdAt    DateTime    @default(now())
 }
