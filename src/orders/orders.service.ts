@@ -7,21 +7,36 @@ export class OrdersService {
   private prisma = new PrismaClient();
 
   async createNewOrder(createNewOrderPayload: CreateNewOrderDto) {
-    try {
-      const { total, quantity, order_status, user_id, product_id } =
-        createNewOrderPayload;
+    const { user_id, items, total } = createNewOrderPayload;
 
-      this.prisma.order.create({
-        data: {
-          order_status,
-          quantity,
-          product_id,
-          user_id,
-          total,
-        },
+    try {
+      return await this.prisma.$transaction(async (prisma) => {
+        const order = await prisma.order.create({
+          data: {
+            user_id,
+            total,
+          },
+        });
+
+        await prisma.orderItem.createMany({
+          data: items.map((item) => ({
+            order_id: order.order_id,
+            product_id: item.product_id,
+            quantity: item.quantity,
+            price: item.price,
+          })),
+        });
+
+        return {
+          message: 'Order created successfully.',
+          order_id: order.order_id,
+        };
       });
     } catch (error) {
-      console.log(error);
+      return {
+        message: 'Failed to create order. Please try again later.',
+        error: error.message,
+      };
     }
   }
 }

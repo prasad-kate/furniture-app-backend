@@ -1,18 +1,24 @@
-import { IsNotEmpty } from 'class-validator';
+import { IsArray, IsInt, IsNotEmpty } from 'class-validator';
 
-export class CreateNewOrderDto {
-  @IsNotEmpty()
+export class CreateOrderItemDto {
+  @IsInt()
   product_id: number;
 
-  @IsNotEmpty()
-  total: number;
-
-  @IsNotEmpty()
+  @IsInt()
   quantity: number;
 
-  @IsNotEmpty()
+  @IsInt()
+  price: number;
+}
+
+export class CreateNewOrderDto {
+  @IsInt()
   user_id: number;
 
+  @IsInt()
+  total: number;
+
+  @IsArray()
   @IsNotEmpty()
-  order_status: 'PENDING' | 'DELIVERED' | 'CANCELLED';
+  items: CreateOrderItemDto[];
 }
