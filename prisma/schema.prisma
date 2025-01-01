@@ -19,6 +19,7 @@ model Products {
   category    ProductsCategory @relation(fields: [category_id], references: [category_id])
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
+  OrderItem   OrderItem[]
 }
 
 model User {
@@ -29,6 +30,7 @@ model User {
   role          UserRole @default(USER)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+  Order         Order[]
 }
 
 model ProductsCategory {
@@ -38,8 +40,35 @@ model ProductsCategory {
   products    Products[]
 }
 
+model Order {
+  order_id     Int         @id @default(autoincrement())
+  user_id      Int
+  user         User        @relation(fields: [user_id], references: [user_id])
+  orderItems   OrderItem[]
+  total        Int         @default(0)
+  order_status OrderStatus @default(PENDING)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+}
+
+model OrderItem {
+  order_item_id Int      @id @default(autoincrement())
+  order_id      Int
+  order         Order    @relation(fields: [order_id], references: [order_id])
+  product_id    Int
+  product       Products @relation(fields: [product_id], references: [id])
+  quantity      Int      @default(1)
+  price         Int
+}
+
 // ENUMS
 enum UserRole {
   ADMIN
   USER
+}
+
+enum OrderStatus {
+  PENDING
+  DELIVERED
+  CANCELLED
 }
