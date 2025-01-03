@@ -87,6 +87,7 @@ export class AuthService {
     }
 
     const name = existingUser.name;
+    const user_id = existingUser.user_id;
 
     const token = this.jwtService.sign({ email, name });
 
@@ -96,6 +97,7 @@ export class AuthService {
       userData: {
         email,
         name,
+        user_id,
       },
     };
   }
