@@ -6,6 +6,32 @@ import { CreateNewOrderDto } from './dto/orders.dto';
 export class OrdersService {
   private prisma = new PrismaClient();
 
+  async getOrderItemsFromOrderId(order_id: number) {
+    try {
+      const orderItems = await this.prisma.orderItem.findMany({
+        where: {
+          order_id,
+        },
+      });
+
+      if (orderItems && orderItems?.length) {
+        return {
+          order_items: orderItems,
+          message: 'Order items retrieved successfully.',
+        };
+      } else {
+        return {
+          message: 'No order items found for the provided order ID.',
+        };
+      }
+    } catch (error) {
+      return {
+        message: 'Failed to get order items',
+        error: error.message,
+      };
+    }
+  }
+
   async createNewOrder(createNewOrderPayload: CreateNewOrderDto) {
     const { user_id, items, total } = createNewOrderPayload;
 
