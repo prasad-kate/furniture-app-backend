@@ -19,7 +19,7 @@ model Products {
   category    ProductsCategory @relation(fields: [category_id], references: [category_id])
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
-  OrderItem   OrderItem[]
+  OrderItems  OrderItem[]
 }
 
 model User {
