@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { CreateNewOrderDto } from './dto/orders.dto';
 
@@ -59,10 +59,13 @@ export class OrdersService {
         };
       });
     } catch (error) {
-      return {
-        message: 'Failed to create order. Please try again later.',
-        error: error.message,
-      };
+      console.log(error);
+      throw new HttpException(
+        {
+          message: 'Failed to process your order. Please try again later.',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 }
