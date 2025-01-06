@@ -5,12 +5,13 @@ import {
   HttpException,
   HttpStatus,
   Param,
+  Patch,
   Post,
   Query,
 } from '@nestjs/common';
-import { CreateNewOrderDto } from './dto/orders.dto';
-import { OrdersService } from './orders.service';
 import { OrderStatus } from '@prisma/client';
+import { CreateNewOrderDto, UpdateOrderStatusDto } from './dto/orders.dto';
+import { OrdersService } from './orders.service';
 
 @Controller('orders')
 export class OrdersController {
@@ -45,5 +46,10 @@ export class OrdersController {
   @Post('create')
   createNewOrder(@Body() createNewOrderPayload: CreateNewOrderDto) {
     return this.ordersService.createNewOrder(createNewOrderPayload);
+  }
+
+  @Patch('update_status')
+  async updateOrderStatus(@Body() updateOrderStatusDto: UpdateOrderStatusDto) {
+    return this.ordersService.updateOrderStatus(updateOrderStatusDto);
   }
 }

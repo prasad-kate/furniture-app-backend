@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { OrderStatus, PrismaClient } from '@prisma/client';
-import { CreateNewOrderDto } from './dto/orders.dto';
+import { CreateNewOrderDto, UpdateOrderStatusDto } from './dto/orders.dto';
 
 @Injectable()
 export class OrdersService {
@@ -115,6 +115,45 @@ export class OrdersService {
       throw new HttpException(
         {
           message: 'Failed to process your order. Please try again later.',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async updateOrderStatus(updateOrderStatusPayload: UpdateOrderStatusDto) {
+    const { order_status, order_id } = updateOrderStatusPayload;
+
+    try {
+      const order = this.prisma.order.findUnique({
+        where: {
+          order_id,
+        },
+      });
+      if (!order) {
+        throw new HttpException(
+          {
+            message: 'Order with the given ID not found.',
+          },
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+
+      await this.prisma.order.update({
+        where: { order_id },
+        data: {
+          order_status,
+        },
+      });
+
+      return {
+        message: 'Order status updated successfully',
+      };
+    } catch (error) {
+      console.log(error);
+      throw new HttpException(
+        {
+          message: 'Failed to update order status. Please try again later.',
         },
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
