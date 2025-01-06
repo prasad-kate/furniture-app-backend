@@ -1,10 +1,62 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
+import { OrderStatus, PrismaClient } from '@prisma/client';
 import { CreateNewOrderDto } from './dto/orders.dto';
 
 @Injectable()
 export class OrdersService {
   private prisma = new PrismaClient();
+
+  async getAllOrders() {
+    try {
+      const orders = await this.prisma.order.findMany();
+
+      if (!orders?.length) {
+        return {
+          message: 'Failed to get orders.',
+          orders: [],
+        };
+      }
+
+      return {
+        orders,
+      };
+    } catch (error) {
+      console.log(error);
+      throw new HttpException(
+        {
+          message: 'Failed to get orders',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+  }
+
+  async getOrdersFromStatus(order_status: OrderStatus) {
+    try {
+      const orders = await this.prisma.order.findMany({
+        where: { order_status },
+      });
+
+      if (!orders.length) {
+        return {
+          message: `No orders found with status '${order_status}'.`,
+          orders: [],
+        };
+      }
+
+      return {
+        orders,
+      };
+    } catch (error) {
+      console.log(error);
+      throw new HttpException(
+        {
+          message: 'Failed to get orders',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+  }
 
   async getOrderItemsFromOrderId(order_id: number) {
     try {
