@@ -6,9 +6,20 @@ import { CreateNewOrderDto, UpdateOrderStatusDto } from './dto/orders.dto';
 export class OrdersService {
   private prisma = new PrismaClient();
 
+  private readonly ordersObj = {
+    user_id: true,
+    createdAt: true,
+    order_id: true,
+    order_status: true,
+    orderItems: true,
+    total: true,
+  };
+
   async getAllOrders() {
     try {
-      const orders = await this.prisma.order.findMany();
+      const orders = await this.prisma.order.findMany({
+        select: this.ordersObj,
+      });
 
       if (!orders?.length) {
         return {
@@ -35,6 +46,7 @@ export class OrdersService {
     try {
       const orders = await this.prisma.order.findMany({
         where: { order_status },
+        select: this.ordersObj,
       });
 
       if (!orders.length) {
