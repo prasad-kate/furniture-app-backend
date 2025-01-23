@@ -76,11 +76,29 @@ export class OrdersService {
         where: {
           order_id,
         },
+        include: {
+          product: {
+            select: {
+              name: true,
+              image: true,
+            },
+          },
+        },
       });
 
-      if (orderItems && orderItems?.length) {
+      if (orderItems && orderItems.length) {
+        const result = orderItems.map((item) => ({
+          order_item_id: item.order_item_id,
+          order_id: item.order_id,
+          product_id: item.product_id,
+          quantity: item.quantity,
+          price: item.price,
+          product_name: item.product.name,
+          image: item.product.image,
+        }));
+
         return {
-          order_items: orderItems,
+          order_items: result,
           message: 'Order items retrieved successfully.',
         };
       } else {
