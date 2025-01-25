@@ -10,7 +10,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { OrderStatus } from '@prisma/client';
-import { CreateNewOrderDto, UpdateOrderStatusDto } from './dto/orders.dto';
+import { CancelOrderDto, CreateNewOrderDto } from './dto/orders.dto';
 import { OrdersService } from './orders.service';
 
 @Controller('orders')
@@ -44,12 +44,12 @@ export class OrdersController {
   }
 
   @Post('create')
-  createNewOrder(@Body() createNewOrderPayload: CreateNewOrderDto) {
+  cancelOrder(@Body() createNewOrderPayload: CreateNewOrderDto) {
     return this.ordersService.createNewOrder(createNewOrderPayload);
   }
 
-  @Patch('update_status')
-  async updateOrderStatus(@Body() updateOrderStatusDto: UpdateOrderStatusDto) {
-    return this.ordersService.updateOrderStatus(updateOrderStatusDto);
+  @Patch('cancel')
+  async updateOrderStatus(@Body() cancleOrderPayload: CancelOrderDto) {
+    return this.ordersService.cancelOrder(cancleOrderPayload);
   }
 }

@@ -1,5 +1,4 @@
-import { OrderStatus } from '@prisma/client';
-import { IsArray, IsEnum, IsInt, IsNotEmpty } from 'class-validator';
+import { IsArray, IsInt, IsNotEmpty } from 'class-validator';
 
 export class CreateOrderItemDto {
   @IsInt()
@@ -24,10 +23,7 @@ export class CreateNewOrderDto {
   items: CreateOrderItemDto[];
 }
 
-export class UpdateOrderStatusDto {
-  @IsEnum(OrderStatus)
-  order_status: OrderStatus;
-
+export class CancelOrderDto {
   @IsNotEmpty()
   order_id: number;
 }

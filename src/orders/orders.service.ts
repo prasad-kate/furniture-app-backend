@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { OrderStatus, PrismaClient } from '@prisma/client';
-import { CreateNewOrderDto, UpdateOrderStatusDto } from './dto/orders.dto';
+import { CancelOrderDto, CreateNewOrderDto } from './dto/orders.dto';
 
 @Injectable()
 export class OrdersService {
@@ -151,8 +151,8 @@ export class OrdersService {
     }
   }
 
-  async updateOrderStatus(updateOrderStatusPayload: UpdateOrderStatusDto) {
-    const { order_status, order_id } = updateOrderStatusPayload;
+  async cancelOrder(cancelOrderStatusPayload: CancelOrderDto) {
+    const { order_id } = cancelOrderStatusPayload;
 
     try {
       const order = this.prisma.order.findUnique({
@@ -172,18 +172,18 @@ export class OrdersService {
       await this.prisma.order.update({
         where: { order_id },
         data: {
-          order_status,
+          order_status: 'CANCELLED',
         },
       });
 
       return {
-        message: 'Order status updated successfully',
+        message: 'Order cancelled successfully',
       };
     } catch (error) {
       console.log(error);
       throw new HttpException(
         {
-          message: 'Failed to update order status. Please try again later.',
+          message: 'Failed to cancel the order. Please try again later.',
         },
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
