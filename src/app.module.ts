@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { TokenExpiryMiddleware } from './middlewares/token.expiry';
 import { OrdersModule } from './orders/orders.module';
 import { ProductsModule } from './products/products.module';
+import { AddressModule } from './address/address.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { ProductsModule } from './products/products.module';
     AuthModule,
     ProductsModule,
     OrdersModule,
+    AddressModule,
   ],
   controllers: [AppController],
   providers: [AppService],
