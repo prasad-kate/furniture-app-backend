@@ -1,4 +1,4 @@
-import { IsBoolean, IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateAddressDto {
   @IsString()
@@ -20,7 +20,4 @@ export class CreateAddressDto {
   @IsString()
   @IsNotEmpty()
   pincode: string;
-
-  @IsBoolean()
-  isActive: boolean;
 }
