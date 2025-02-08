@@ -30,4 +30,10 @@ export class AddressService {
       throw new InternalServerErrorException('Something went wrong');
     }
   }
+
+  async getUserAddresses(userId: number) {
+    return this.prisma.address.findMany({
+      where: { user_id: userId },
+    });
+  }
 }
