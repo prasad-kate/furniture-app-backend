@@ -4,10 +4,11 @@ import {
   Get,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
 } from '@nestjs/common';
 import { AddressService } from './address.service';
-import { CreateAddressDto } from './dto/address.dto';
+import { CreateAddressDto, ToggleAddressStatusDto } from './dto/address.dto';
 
 @Controller('address')
 export class AddressController {
@@ -24,5 +25,12 @@ export class AddressController {
   @Get(':userId')
   async getUserAddresses(@Param('userId', ParseIntPipe) userId: number) {
     return this.addressService.getUserAddresses(userId);
+  }
+
+  @Patch('update_status')
+  async toggleAddressStatus(
+    @Body() toggleAddressStatusPayload: ToggleAddressStatusDto,
+  ) {
+    return this.addressService.updateAddressStatus(toggleAddressStatusPayload);
   }
 }

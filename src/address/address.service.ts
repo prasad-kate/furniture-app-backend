@@ -4,7 +4,7 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
-import { CreateAddressDto } from './dto/address.dto';
+import { CreateAddressDto, ToggleAddressStatusDto } from './dto/address.dto';
 
 @Injectable()
 export class AddressService {
@@ -46,5 +46,47 @@ export class AddressService {
       where: { user_id: userId },
       select: this.addressObj,
     });
+  }
+
+  async updateAddressStatus(
+    toggleAddressStatusPayload: ToggleAddressStatusDto,
+  ) {
+    const { userId, addressId } = toggleAddressStatusPayload;
+    try {
+      const address = await this.prisma.address.findUnique({
+        where: { address_id: addressId },
+      });
+
+      if (!address) {
+        throw new ConflictException('Address not found');
+      }
+
+      if (address.user_id !== userId) {
+        throw new ConflictException('Address does not belong to this user');
+      }
+
+      const newStatus = !address.isActive;
+
+      if (newStatus) {
+        await this.prisma.address.updateMany({
+          where: { user_id: userId },
+          data: { isActive: false },
+        });
+      }
+
+      await this.prisma.address.update({
+        where: { address_id: addressId },
+        data: { isActive: newStatus },
+      });
+
+      return {
+        message: 'Address status updated successfully',
+      };
+    } catch (error) {
+      if (error instanceof ConflictException) {
+        throw error;
+      }
+      throw new Error(`Failed to update address status: ${error.message}`);
+    }
   }
 }
