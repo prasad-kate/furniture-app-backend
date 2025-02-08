@@ -10,6 +10,16 @@ import { CreateAddressDto } from './dto/address.dto';
 export class AddressService {
   private prisma = new PrismaClient();
 
+  private readonly addressObj = {
+    address: true,
+    address_id: true,
+    city: true,
+    country: true,
+    isActive: true,
+    pincode: true,
+    state: true,
+  };
+
   async createAddress(userId: number, createAddressPayload: CreateAddressDto) {
     try {
       await this.prisma.address.create({
@@ -34,6 +44,7 @@ export class AddressService {
   async getUserAddresses(userId: number) {
     return this.prisma.address.findMany({
       where: { user_id: userId },
+      select: this.addressObj,
     });
   }
 }
