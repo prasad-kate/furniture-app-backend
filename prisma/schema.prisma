@@ -32,6 +32,7 @@ model User {
   updatedAt     DateTime  @updatedAt
   Order         Order[]
   Address       Address[]
+  cards         Card[]
 }
 
 model ProductsCategory {
@@ -72,6 +73,18 @@ model Address {
   country    String
   pincode    String
   isActive   Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Card {
+  card_id    String   @id @default(uuid())
+  userId     Int
+  user       User     @relation(fields: [userId], references: [user_id], onDelete: Cascade)
+  userName   String
+  isActive   Boolean  @default(false)
+  expiry     String   @db.VarChar(5)
+  lastDigits String   @db.VarChar(4)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 }
