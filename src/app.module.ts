@@ -8,6 +8,7 @@ import { TokenExpiryMiddleware } from './middlewares/token.expiry';
 import { OrdersModule } from './orders/orders.module';
 import { ProductsModule } from './products/products.module';
 import { AddressModule } from './address/address.module';
+import { CardsModule } from './cards/cards.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { AddressModule } from './address/address.module';
     ProductsModule,
     OrdersModule,
     AddressModule,
+    CardsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
