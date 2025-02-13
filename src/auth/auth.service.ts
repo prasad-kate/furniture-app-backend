@@ -29,7 +29,7 @@ export class AuthService {
 
       const password_hash = await bcrypt.hash(password, 10);
 
-      await this.prisma.user.create({
+      const newUser = await this.prisma.user.create({
         data: {
           name,
           email,
@@ -45,6 +45,7 @@ export class AuthService {
         userData: {
           email,
           name,
+          user_id: newUser.user_id,
         },
       };
     } catch (error) {
