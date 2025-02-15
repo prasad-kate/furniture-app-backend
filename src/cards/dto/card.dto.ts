@@ -1,4 +1,4 @@
-import { IsNotEmpty } from 'class-validator';
+import { IsInt, IsNotEmpty } from 'class-validator';
 
 export class AddNewCardDetailsDto {
   @IsNotEmpty()
@@ -12,4 +12,13 @@ export class AddNewCardDetailsDto {
 
   @IsNotEmpty()
   lastDigits: string;
+}
+
+export class UpdateCardStatusDto {
+  @IsInt()
+  @IsNotEmpty()
+  userId: number;
+
+  @IsNotEmpty()
+  cardId: string;
 }

@@ -1,6 +1,6 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import { CardsService } from './cards.service';
-import { AddNewCardDetailsDto } from './dto/card.dto';
+import { AddNewCardDetailsDto, UpdateCardStatusDto } from './dto/card.dto';
 
 @Controller('cards')
 export class CardsController {
@@ -14,5 +14,10 @@ export class CardsController {
   @Post('create')
   addNewCardDetails(@Body() addNewCardDetailsPayload: AddNewCardDetailsDto) {
     return this.cardsService.addNewCardDetails(addNewCardDetailsPayload);
+  }
+
+  @Patch('update_status')
+  async updateCardStatus(@Body() toggleCardStatusPayload: UpdateCardStatusDto) {
+    return this.cardsService.updateCardStatus(toggleCardStatusPayload);
   }
 }

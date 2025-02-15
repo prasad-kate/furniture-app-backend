@@ -4,7 +4,7 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
-import { AddNewCardDetailsDto } from './dto/card.dto';
+import { AddNewCardDetailsDto, UpdateCardStatusDto } from './dto/card.dto';
 
 @Injectable()
 export class CardsService {
@@ -61,6 +61,47 @@ export class CardsService {
       }
       console.error('Unexpected error:', error);
       throw new InternalServerErrorException('Something went wrong');
+    }
+  }
+
+  async updateCardStatus(toggleCardStatusPayload: UpdateCardStatusDto) {
+    const { userId, cardId } = toggleCardStatusPayload;
+
+    try {
+      const cardDetails = await this.prisma.card.findUnique({
+        where: { card_id: cardId },
+      });
+
+      if (!cardDetails) {
+        throw new ConflictException('Card details not found');
+      }
+
+      if (cardDetails.userId !== userId) {
+        throw new ConflictException('Card does not belong to this user');
+      }
+
+      const newStatus = !cardDetails?.isActive;
+
+      if (newStatus) {
+        await this.prisma.card.updateMany({
+          where: { userId },
+          data: { isActive: false },
+        });
+      }
+
+      await this.prisma.card.update({
+        where: { card_id: cardId },
+        data: { isActive: newStatus },
+      });
+
+      return {
+        message: 'Card status updated successfully',
+      };
+    } catch (error) {
+      if (error instanceof ConflictException) {
+        throw error;
+      }
+      throw new Error(`Failed to update card status: ${error.message}`);
     }
   }
 }
