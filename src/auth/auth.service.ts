@@ -1,12 +1,18 @@
 import {
   ConflictException,
+  HttpException,
+  HttpStatus,
   Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaClient } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
-import { CreateNewUserDto, LoginWithEmailDto } from './dto/auth.dto';
+import {
+  CreateNewUserDto,
+  LoginWithEmailDto,
+  UpdateUserNameDto,
+} from './dto/auth.dto';
 
 @Injectable()
 export class AuthService {
@@ -101,5 +107,38 @@ export class AuthService {
         user_id,
       },
     };
+  }
+
+  async updateUserName(updateUserNamePayload: UpdateUserNameDto) {
+    try {
+      const { name, email } = updateUserNamePayload;
+
+      const existingUser = await this.prisma.user.findUnique({
+        where: { email },
+      });
+
+      if (!existingUser) {
+        throw new ConflictException('User does not exists');
+      }
+
+      await this.prisma.user.update({
+        where: { email },
+        data: {
+          name,
+        },
+      });
+
+      return {
+        message: 'Username changed successfully',
+      };
+    } catch (error) {
+      console.log(error);
+      throw new HttpException(
+        {
+          message: 'Failed to change username. Please try again later.',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 }
