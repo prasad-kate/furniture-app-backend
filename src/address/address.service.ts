@@ -4,7 +4,11 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
-import { CreateAddressDto, ToggleAddressStatusDto } from './dto/address.dto';
+import {
+  CreateAddressDto,
+  DeleteAddressDto,
+  ToggleAddressStatusDto,
+} from './dto/address.dto';
 
 @Injectable()
 export class AddressService {
@@ -87,6 +91,33 @@ export class AddressService {
         throw error;
       }
       throw new Error(`Failed to update address status: ${error.message}`);
+    }
+  }
+
+  async deleteAddress(
+    deleteAddressPayload: DeleteAddressDto,
+  ): Promise<{ message: string }> {
+    try {
+      const { address_id } = deleteAddressPayload;
+
+      const address = await this.prisma.address.findUnique({
+        where: { address_id },
+      });
+
+      if (!address) {
+        throw new ConflictException('Address not found');
+      }
+
+      await this.prisma.address.delete({
+        where: { address_id },
+      });
+
+      return { message: 'Address deleted successfully' };
+    } catch (error) {
+      if (error instanceof ConflictException) {
+        throw error;
+      }
+      throw new Error(`Failed to delete address : ${error.message}`);
     }
   }
 }

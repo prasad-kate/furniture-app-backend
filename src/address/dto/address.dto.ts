@@ -31,3 +31,9 @@ export class ToggleAddressStatusDto {
   @IsNotEmpty()
   addressId: number;
 }
+
+export class DeleteAddressDto {
+  @IsInt()
+  @IsNotEmpty()
+  address_id: number;
+}

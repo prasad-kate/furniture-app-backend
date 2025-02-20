@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -8,7 +9,11 @@ import {
   Post,
 } from '@nestjs/common';
 import { AddressService } from './address.service';
-import { CreateAddressDto, ToggleAddressStatusDto } from './dto/address.dto';
+import {
+  CreateAddressDto,
+  DeleteAddressDto,
+  ToggleAddressStatusDto,
+} from './dto/address.dto';
 
 @Controller('address')
 export class AddressController {
@@ -32,5 +37,10 @@ export class AddressController {
     @Body() toggleAddressStatusPayload: ToggleAddressStatusDto,
   ) {
     return this.addressService.updateAddressStatus(toggleAddressStatusPayload);
+  }
+
+  @Delete('delete')
+  async deleteAddress(@Body() deleteAddressPayload: DeleteAddressDto) {
+    return this.addressService.deleteAddress(deleteAddressPayload);
   }
 }
